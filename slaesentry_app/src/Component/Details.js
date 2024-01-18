@@ -1,7 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteRow } from '../Redux/actionSlice'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 const Details = () => {
+	const [itemMaster,setItemMaster]=useState([])
 	const [status, setStatus] = useState('')
 	const { numbers, rows } = useSelector((state) => state.details);
 	const despach = useDispatch()
@@ -14,6 +17,19 @@ const Details = () => {
 	const handleStatusChange = (e) => {
 		setStatus(e.target.value);
 	};
+	const getData = async()=>{
+		try {
+			const response =await axios.get("http://localhost:5000/getMaster")
+
+				response.data.success ? setItemMaster(response.data.data):toast.error(response.data.message)
+		} catch (error) {
+			console.log(error)
+			toast.error("somthing went wrong on catch")
+		}
+	}
+	useEffect(()=>{
+		getData()
+	},[])
 
 	return (
 		<>
@@ -26,7 +42,7 @@ const Details = () => {
 
 						<div className="col-span-full sm:col-span-2">
 							<label for="city" className="text-sm">Vr NO:</label>
-							<input id="city" type="text" placeholder="" className="w-full p-1 rounded-sm focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900" />
+							<input id="city" type="number" placeholder="" className="w-full p-1 rounded-sm focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900" />
 						</div>
 						<div className="col-span-full sm:col-span-2">
 							<label for="state" className="text-sm">Vr Date:</label>
